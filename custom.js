@@ -1,6 +1,184 @@
 document.addEventListener('DOMContentLoaded', function () {
 
 	const lenis = new Lenis();
+
+	// =============================================
+// Hoppi USP Slider — Custom JS
+// Place in Webflow Page Settings > Before </body>
+// Requires: Swiper already initialized on .s-usp-slider_swiper
+// =============================================
+
+(function () {
+  // ------------------------------------------
+  // Wait for Swiper to be ready
+  // ------------------------------------------
+  function initHoppiSlider() {
+    const swiperEl = document.querySelector(".s-usp-slider_swiper");
+    if (!swiperEl || !swiperEl.swiper) {
+      // Swiper not yet initialized — retry
+      requestAnimationFrame(initHoppiSlider);
+      return;
+    }
+
+    const swiper = swiperEl.swiper;
+
+    // ------------------------------------------
+    // Side circle elements (prev / next)
+    // These are the fixed decorative circles flanking the main slide.
+    // Create them in Webflow and give them these classes,
+    // OR the script will create them if absent.
+    // ------------------------------------------
+    let prevCircle = document.querySelector(".s-usp-side-circle--prev");
+    let nextCircle = document.querySelector(".s-usp-side-circle--next");
+
+    // If the designer hasn't added the side circles in Webflow,
+    // we inject them. Otherwise this block is skipped.
+    if (!prevCircle || !nextCircle) {
+      const inner = document.querySelector(".s-usp-slider_inner");
+
+      prevCircle = document.createElement("div");
+      prevCircle.className = "s-usp-side-circle s-usp-side-circle--prev";
+
+      nextCircle = document.createElement("div");
+      nextCircle.className = "s-usp-side-circle s-usp-side-circle--next";
+
+      inner.appendChild(prevCircle);
+      inner.appendChild(nextCircle);
+    }
+
+    // Each circle needs an inner image wrapper for the mask animation
+    function ensureInner(circle) {
+      let inner = circle.querySelector(".s-usp-side-circle_img-wrap");
+      if (!inner) {
+        inner = document.createElement("div");
+        inner.className = "s-usp-side-circle_img-wrap";
+        circle.appendChild(inner);
+      }
+      return inner;
+    }
+
+    const prevInner = ensureInner(prevCircle);
+    const nextInner = ensureInner(nextCircle);
+
+    // ------------------------------------------
+    // Helper: get image src + srcset from a slide index
+    // ------------------------------------------
+    function getSlideImg(index) {
+      const slides = swiper.slides;
+      const total = slides.length;
+      // Wrap around
+      const i = ((index % total) + total) % total;
+      const img = slides[i].querySelector(".s-usp-slide_img");
+      if (!img) return null;
+      return {
+        src: img.src,
+        srcset: img.srcset || "",
+        alt: img.alt || "",
+      };
+    }
+
+    // ------------------------------------------
+    // Render an image into a side circle wrapper
+    // ------------------------------------------
+    function renderImg(wrapper, imgData) {
+      if (!imgData) {
+        wrapper.innerHTML = "";
+        return;
+      }
+      // Reuse existing img if present, otherwise create
+      let img = wrapper.querySelector("img");
+      if (!img) {
+        img = document.createElement("img");
+        img.className = "s-usp-side-circle_img";
+        wrapper.appendChild(img);
+      }
+      img.src = imgData.src;
+      if (imgData.srcset) img.srcset = imgData.srcset;
+      img.alt = imgData.alt;
+    }
+
+    // ------------------------------------------
+    // Update side circles to show prev/next images
+    // ------------------------------------------
+    function updateSideCircles(activeIndex) {
+      const total = swiper.slides.length;
+      const prevIndex = ((activeIndex - 1) % total + total) % total;
+      const nextIndex = (activeIndex + 1) % total;
+
+      renderImg(prevInner, getSlideImg(prevIndex));
+      renderImg(nextInner, getSlideImg(nextIndex));
+    }
+
+    // ------------------------------------------
+    // Slide-in animation via class toggling
+    // Direction: 'next' slides new image in from right,
+    //            'prev' slides new image in from left.
+    // ------------------------------------------
+    function animateSideCircle(circle, direction) {
+      const wrap = circle.querySelector(".s-usp-side-circle_img-wrap");
+      if (!wrap) return;
+
+      // Remove any in-progress classes first
+      wrap.classList.remove(
+        "is-entering-next",
+        "is-entering-prev",
+        "is-entering"
+      );
+
+      // Force reflow to restart animation
+      void wrap.offsetWidth;
+
+      wrap.classList.add(
+        direction === "next" ? "is-entering-next" : "is-entering-prev"
+      );
+      wrap.classList.add("is-entering");
+
+      wrap.addEventListener(
+        "animationend",
+        () => {
+          wrap.classList.remove(
+            "is-entering-next",
+            "is-entering-prev",
+            "is-entering"
+          );
+        },
+        { once: true }
+      );
+    }
+
+    // ------------------------------------------
+    // Hook into Swiper events using .on()
+    // ------------------------------------------
+
+    // Before transition: update images immediately so they're ready
+    swiper.on("slideChangeTransitionStart", function () {
+      const direction = swiper.swipeDirection || "next"; // 'next' | 'prev'
+      updateSideCircles(swiper.realIndex);
+
+      // Animate the side circle that's becoming more "active"
+      if (direction === "next") {
+        animateSideCircle(nextCircle, "next");
+      } else {
+        animateSideCircle(prevCircle, "prev");
+      }
+    });
+
+    // After transition: re-sync to be safe (handles programmatic navigation)
+    swiper.on("slideChangeTransitionEnd", function () {
+      updateSideCircles(swiper.realIndex);
+    });
+
+    // Init on load
+    updateSideCircles(swiper.realIndex);
+  }
+
+  // Kick off after DOM ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initHoppiSlider);
+  } else {
+    initHoppiSlider();
+  }
+})();
   
   function parallax() {
   
