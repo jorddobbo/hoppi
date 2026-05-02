@@ -1,5 +1,3 @@
-<script>
-
 document.addEventListener('DOMContentLoaded', function () {
 
 	const lenis = new Lenis();
@@ -286,5 +284,3 @@ document.addEventListener('DOMContentLoaded', function () {
   $(document).ready(function(){lenis.start();})
    
 });
-   
-</script>
