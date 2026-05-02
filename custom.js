@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
  	function initSliders() {
     var configs = [
       {selector: '.s-image-slider' },
-      {selector: '.s-usp-slider_swiper',
+      /*{selector: '.s-usp-slider_swiper',
       	options: {
         	effect: 'fade',
         	slidesPerView: 'auto',
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
           centeredSlides: true,
           easing: 'cubic-bezier(0.0, 0.0, 0.2, 1)'
         }
-      },
+      },*/
       {selector: '.s-previous-events_slider',
       	options: {
         	slidesPerView: 'auto',
