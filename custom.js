@@ -1,8 +1,4 @@
 <script>
-  gsap.registerPlugin(ScrollTrigger);
-</script>
-	
-<script>
 
 document.addEventListener('DOMContentLoaded', function () {
 
