@@ -1,13 +1,7 @@
-<script src="https://unpkg.com/lenis@1.2.3/dist/lenis.min.js"></script> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <script>
   gsap.registerPlugin(ScrollTrigger);
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js" integrity="sha512-Ysw1DcK1P+uYLqprEAzNQJP+J4hTx4t/3X2nbVwszao8wD+9afLjBQYjz7Uk4ADP+Er++mJoScI42ueGtQOzEA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://unpkg.com/splitting/dist/splitting.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/protonet-jquery.inview/1.1.2/jquery.inview.min.js"></script>
-
+	
 <script>
 
 document.addEventListener('DOMContentLoaded', function () {
